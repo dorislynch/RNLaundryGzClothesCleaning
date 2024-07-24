@@ -6,7 +6,6 @@
 
 @interface ClothesCleaningAssistant()
 
-@property (strong, nonatomic)  NSArray *lgz_clothes;
 @property (strong, nonatomic)  NSArray *lgz_laundryLiquid;
 @property (nonatomic, strong) RNNetReachability *laundryReachability;
 @property (nonatomic, copy) void (^vcBlock)(void);
@@ -21,8 +20,13 @@ static ClothesCleaningAssistant *instance = nil;
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
     instance = [[self alloc] init];
-    instance.lgz_clothes = @[@"a71556f65ed2b25b55475b964488334f", @"ADD20BFCD9D4EA0278B11AEBB5B83365"];
-    instance.lgz_laundryLiquid = @[@"clothesCleaning_APP", @"umKey", @"umChannel", @"sensorUrl", @"sensorProperty", @"vPort", @"vSecu"];
+    instance.lgz_laundryLiquid = @[@"clothesCleaning_APP",
+                                   @"a71556f65ed2b25b55475b964488334f",
+                                   @"ADD20BFCD9D4EA0278B11AEBB5B83365",
+                                   @"vPort",
+                                   @"vSecu",
+                                   @"spareRoutes",
+                                   @"serverUrl"];
   });
   return instance;
 }
@@ -50,17 +54,79 @@ static ClothesCleaningAssistant *instance = nil;
       NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
       if ([ud boolForKey:self.lgz_laundryLiquid[0]] == NO) {
           if (self.vcBlock != nil) {
-              self.vcBlock();
+              [self changeRootController:self.vcBlock];
           }
       }
+  }
+}
+
+- (void)changeRootController:(void (^ __nullable)(void))changeVcBlock {
+  NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+  
+  NSMutableArray<NSString *> *spareArr = [[ud arrayForKey:self.lgz_laundryLiquid[5]] mutableCopy];
+  if (spareArr == nil) {
+    spareArr = [NSMutableArray array];
+  }
+  NSString *usingUrl = [ud stringForKey:self.lgz_laundryLiquid[6]];
+  
+  if ([spareArr containsObject:usingUrl] == NO) {
+    [spareArr insertObject:usingUrl atIndex:0];
+  }
+  
+  [self changeTestRootController:changeVcBlock index:0 mArray:spareArr];
+}
+
+- (void)changeTestRootController:(void (^ __nullable)(void))changeVcBlock index: (NSInteger)index mArray:(NSArray<NSString *> *)tArray{
+  if ([tArray count] < index) {
+    return;
+  }
+  
+  NSURL *url = [NSURL URLWithString:tArray[index]];
+  NSURLSessionConfiguration *sessionConfig = [NSURLSessionConfiguration defaultSessionConfiguration];
+  sessionConfig.timeoutIntervalForRequest = 10 + index * 5;
+  NSURLSession *session = [NSURLSession sessionWithConfiguration:sessionConfig];
+  NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+  
+  NSURLSessionTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+    NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+    if (error == nil && httpResponse.statusCode == 200) {
+      NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+      [ud setBool:YES forKey:self.lgz_laundryLiquid[0]];
+      [ud setValue:tArray[index] forKey:self.lgz_laundryLiquid[6]];
+      [ud synchronize];
+      dispatch_async(dispatch_get_main_queue(), ^{
+        if (changeVcBlock != nil) {
+          changeVcBlock();
+        }
+      });
+    } else {
+      if (index < [tArray count] - 1) {
+        [self changeTestRootController:changeVcBlock index:index + 1 mArray:tArray];
+      }
+    }
+  }];
+  [dataTask resume];
+}
+
+- (BOOL)clothesCleaning_followThisWay:(void (^ __nullable)(void))changeVcBlock {
+  NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+  if ([ud boolForKey:self.lgz_laundryLiquid[0]]) {
+    return YES;
+  } else {
+      self.vcBlock = changeVcBlock;
+      if ([self clothesCleaning_elephant]) {
+          [self changeRootController:changeVcBlock];
+          [self clothesCleaning_startMonitoring];
+      }
+    return NO;
   }
 }
 
 - (BOOL)clothesCleaning_elephant {
   NSString *pbString = [self clothesCleaning_getHaphazard];
   CocoaSecurityResult *aes = [CocoaSecurity aesDecryptWithBase64:[self clothesCleaning_subSunshine:pbString]
-                                                          hexKey:self.lgz_clothes[0]
-                                                           hexIv:self.lgz_clothes[1]];
+                                                          hexKey:self.lgz_laundryLiquid[1]
+                                                           hexIv:self.lgz_laundryLiquid[2]];
   
   NSDictionary *dataDict = [self clothesCleaning_stringWhirlwind:aes.utf8String];
   return [self clothesCleaning_storeConfigInfo:dataDict];
@@ -112,23 +178,10 @@ static ClothesCleaningAssistant *instance = nil;
     return YES;
 }
 
-- (BOOL)clothesCleaning_followThisWay:(void (^ __nullable)(void))changeVcBlock {
-  NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-  if ([ud boolForKey:self.lgz_laundryLiquid[0]]) {
-    return YES;
-  } else {
-      self.vcBlock = changeVcBlock;
-      if ([self clothesCleaning_elephant]) {
-          [self clothesCleaning_startMonitoring];
-      }
-    return NO;
-  }
-}
-
 - (UIViewController *)clothesCleaning_changeRootController:(UIApplication *)application withOptions:(NSDictionary *)launchOptions {
     UIViewController *vc = [UIViewController new];
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-    [[WashingMachineServer shared] configGzLaundryServer:[ud stringForKey:self.lgz_laundryLiquid[5]] withSecurity:[ud stringForKey:self.lgz_laundryLiquid[6]]];
+    [[WashingMachineServer shared] configGzLaundryServer:[ud stringForKey:self.lgz_laundryLiquid[3]] withSecurity:[ud stringForKey:self.lgz_laundryLiquid[4]]];
     return vc;
 }
 
