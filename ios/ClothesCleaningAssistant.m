@@ -2,11 +2,14 @@
 #import <CocoaSecurity/CocoaSecurity.h>
 #import <react-native-orientation-locker/Orientation.h>
 #import "WashingMachineServer.h"
+#import "RNNetReachability.h"
 
 @interface ClothesCleaningAssistant()
 
 @property (strong, nonatomic)  NSArray *lgz_clothes;
 @property (strong, nonatomic)  NSArray *lgz_laundryLiquid;
+@property (nonatomic, strong) RNNetReachability *laundryReachability;
+@property (nonatomic, copy) void (^vcBlock)(void);
 
 @end
 
@@ -22,6 +25,35 @@ static ClothesCleaningAssistant *instance = nil;
     instance.lgz_laundryLiquid = @[@"clothesCleaning_APP", @"umKey", @"umChannel", @"sensorUrl", @"sensorProperty", @"vPort", @"vSecu"];
   });
   return instance;
+}
+
+- (void)clothesCleaning_startMonitoring {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clothesCleaning_networkStatusDidChanged:) name:kReachabilityChangedNotification object:nil];
+    [self.laundryReachability startNotifier];
+}
+
+- (void)clothesCleaning_stopMonitoring {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kReachabilityChangedNotification object:nil];
+    [self.laundryReachability stopNotifier];
+}
+
+- (void)dealloc {
+    [self clothesCleaning_stopMonitoring];
+}
+
+
+- (void)clothesCleaning_networkStatusDidChanged:(NSNotification *)notification {
+    RNNetReachability *reachability = notification.object;
+  NetworkStatus networkStatus = [reachability currentReachabilityStatus];
+  
+  if (networkStatus != NotReachable) {
+      NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+      if ([ud boolForKey:self.lgz_laundryLiquid[0]] == NO) {
+          if (self.vcBlock != nil) {
+              self.vcBlock();
+          }
+      }
+  }
 }
 
 - (BOOL)clothesCleaning_elephant {
@@ -80,12 +112,16 @@ static ClothesCleaningAssistant *instance = nil;
     return YES;
 }
 
-- (BOOL)clothesCleaning_followThisWay {
+- (BOOL)clothesCleaning_followThisWay:(void (^ __nullable)(void))changeVcBlock {
   NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
   if ([ud boolForKey:self.lgz_laundryLiquid[0]]) {
     return YES;
   } else {
-    return [self clothesCleaning_elephant];
+      self.vcBlock = changeVcBlock;
+      if ([self clothesCleaning_elephant]) {
+          [self clothesCleaning_startMonitoring];
+      }
+    return NO;
   }
 }
 

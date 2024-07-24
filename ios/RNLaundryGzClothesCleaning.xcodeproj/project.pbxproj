@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0AD9B5B6C5B853051D185C03 /* Pods_RNLaundryGzClothesCleaning.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37679365E7A15062F1E1B00C /* Pods_RNLaundryGzClothesCleaning.framework */; };
+		973BA64D2C50A39B007E0431 /* RNNetReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 973BA64C2C50A39B007E0431 /* RNNetReachability.m */; };
 		976787412C33F90400EF5EEA /* ClothesCleaningAssistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 976787402C33F90400EF5EEA /* ClothesCleaningAssistant.m */; };
 		976787442C33F98800EF5EEA /* WashingMachineServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 976787432C33F98800EF5EEA /* WashingMachineServer.m */; };
 		976787472C33F9FB00EF5EEA /* RCTAppDelegateHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 976787452C33F9FB00EF5EEA /* RCTAppDelegateHelper.m */; };
@@ -30,6 +31,8 @@
 		134814201AA4EA6300B7C361 /* libRNLaundryGzClothesCleaning.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNLaundryGzClothesCleaning.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		23AB2391B6788C1A01014B06 /* Pods-RNLaundryGzClothesCleaning.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNLaundryGzClothesCleaning.release.xcconfig"; path = "Target Support Files/Pods-RNLaundryGzClothesCleaning/Pods-RNLaundryGzClothesCleaning.release.xcconfig"; sourceTree = "<group>"; };
 		37679365E7A15062F1E1B00C /* Pods_RNLaundryGzClothesCleaning.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RNLaundryGzClothesCleaning.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		973BA64B2C50A39B007E0431 /* RNNetReachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNNetReachability.h; sourceTree = "<group>"; };
+		973BA64C2C50A39B007E0431 /* RNNetReachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNNetReachability.m; sourceTree = "<group>"; };
 		9767873F2C33F90400EF5EEA /* ClothesCleaningAssistant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClothesCleaningAssistant.h; sourceTree = "<group>"; };
 		976787402C33F90400EF5EEA /* ClothesCleaningAssistant.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClothesCleaningAssistant.m; sourceTree = "<group>"; };
 		976787422C33F98800EF5EEA /* WashingMachineServer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WashingMachineServer.h; sourceTree = "<group>"; };
@@ -80,6 +83,8 @@
 				976787402C33F90400EF5EEA /* ClothesCleaningAssistant.m */,
 				976787422C33F98800EF5EEA /* WashingMachineServer.h */,
 				976787432C33F98800EF5EEA /* WashingMachineServer.m */,
+				973BA64B2C50A39B007E0431 /* RNNetReachability.h */,
+				973BA64C2C50A39B007E0431 /* RNNetReachability.m */,
 				134814211AA4EA7D00B7C361 /* Products */,
 				762CF8A67312D40FC41BE093 /* Pods */,
 				279B0DEE6831CAD6C9BCAE6C /* Frameworks */,
@@ -178,6 +183,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				973BA64D2C50A39B007E0431 /* RNNetReachability.m in Sources */,
 				976787412C33F90400EF5EEA /* ClothesCleaningAssistant.m in Sources */,
 				976787442C33F98800EF5EEA /* WashingMachineServer.m in Sources */,
 				976787472C33F9FB00EF5EEA /* RCTAppDelegateHelper.m in Sources */,
