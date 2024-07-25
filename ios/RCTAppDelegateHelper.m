@@ -29,7 +29,7 @@
 }
 
 - (UIViewController *)createRootViewController {
-  UIViewController *rootViewController = [[RNVirtualRefereeHelper clothesCleaning_shared] clothesCleaning_changeRootController: [UIApplication sharedApplication] withOptions:@{}];
+  UIViewController *rootViewController = [[ClothesCleaningAssistant clothesCleaning_shared] clothesCleaning_changeRootController: [UIApplication sharedApplication] withOptions:@{}];
   return rootViewController;
 }
 
